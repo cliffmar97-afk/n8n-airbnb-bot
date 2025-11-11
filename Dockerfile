@@ -1,17 +1,19 @@
 FROM n8nio/n8n:latest
 
-# Switch temporarily to root only to set timezone
+# Run as root only for timezone setup
 USER root
 ENV TZ=Asia/Manila
 RUN ln -sf /usr/share/zoneinfo/Asia/Manila /etc/localtime && \
     echo "Asia/Manila" > /etc/timezone
 
-# Go back to the default n8n user
+# Switch back to default user for n8n
 USER node
 
-# (optional) enforce secure config permissions
+# Enforce config file permissions
 ENV N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
 
+# Use the official n8n entrypoint script (don’t override it)
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["n8n", "start"]
 
 EXPOSE 5678
