@@ -1,12 +1,13 @@
 FROM n8nio/n8n:latest
 
-# PH Timezone
-RUN apk add --no-cache tzdata
-ENV TZ=Asia/Manila
-RUN cp /usr/share/zoneinfo/Asia/Manila /etc/localtime
+# PH Timezone (Debian uses apt)
+RUN apt-get update && \
+    apt-get install -y tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
-# Expose port
+ENV TZ=Asia/Manila
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 EXPOSE 5678
 
-# Start n8n
 CMD ["n8n", "start"]
