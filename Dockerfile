@@ -8,9 +8,7 @@ RUN apk add --no-cache tzdata && \
     cp /usr/share/zoneinfo/Asia/Manila /etc/localtime && \
     echo "Asia/Manila" > /etc/timezone
 
-# Switch back to node user (security)
-USER node
+# Fix n8n command by using full path
+CMD ["/usr/local/bin/n8n", "start"]
 
 EXPOSE 5678
-
-CMD ["n8n", "start"]
