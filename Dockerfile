@@ -1,10 +1,7 @@
 FROM n8nio/n8n:latest
 
-# PH Timezone (Debian uses apt)
-RUN apt-get update && \
-    apt-get install -y tzdata && \
-    rm -rf /var/lib/apt/lists/*
-
+# PH Timezone (Alpine uses apk)
+RUN apk add --no-cache tzdata
 ENV TZ=Asia/Manila
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
