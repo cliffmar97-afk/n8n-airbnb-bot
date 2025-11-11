@@ -1,19 +1,28 @@
-FROM n8nio/n8n:latest
+# Use official Node image, not n8nio/n8n
+FROM node:18-alpine
 
-# Run as root only for timezone setup
-USER root
+# Set timezone to Manila
 ENV TZ=Asia/Manila
-RUN ln -sf /usr/share/zoneinfo/Asia/Manila /etc/localtime && \
-    echo "Asia/Manila" > /etc/timezone
+RUN apk add --no-cache tzdata \
+    && cp /usr/share/zoneinfo/Asia/Manila /etc/localtime \
+    && echo "Asia/Manila" > /etc/timezone
 
-# Switch back to default user for n8n
+# Create app directory
+WORKDIR /app
+
+# Install n8n globally
+RUN npm install -g n8n
+
+# Create n8n data directory
+RUN mkdir -p /home/node/.n8n && chown -R node:node /home/node
+
+# Switch to non-root user
 USER node
 
-# Enforce config file permissions
+# Expose n8n default port
+EXPOSE 5678
+
+# Enforce permissions and start n8n
 ENV N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
 
-# Use the official n8n entrypoint script (don’t override it)
-ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["n8n", "start"]
-
-EXPOSE 5678
