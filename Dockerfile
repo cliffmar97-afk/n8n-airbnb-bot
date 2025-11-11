@@ -1,9 +1,15 @@
 FROM n8nio/n8n:latest
 
-# PH Timezone (Alpine uses apk)
-RUN apk add --no-cache tzdata
-ENV TZ=Asia/Manila
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# Switch to root to install tzdata
+USER root
+
+# Install tzdata + set PH time
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/Asia/Manila /etc/localtime && \
+    echo "Asia/Manila" > /etc/timezone
+
+# Switch back to node user (security)
+USER node
 
 EXPOSE 5678
 
