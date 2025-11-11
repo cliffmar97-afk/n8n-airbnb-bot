@@ -1,5 +1,5 @@
-# Use official Node image, not n8nio/n8n
-FROM node:18-alpine
+# Use Node 20 (required for latest n8n)
+FROM node:20-alpine
 
 # Set timezone to Manila
 ENV TZ=Asia/Manila
